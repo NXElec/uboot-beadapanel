@@ -483,6 +483,54 @@ static const struct boot_mode board_boot_modes[] = {
 };
 #endif
 
+#if defined(CONFIG_VIDEO_LCD_HBC068) || defined(CONFIG_VIDEO_LCD_HBC04)
+#define BRIDGE_PAD_CTRL1	\
+	(PAD_CTL_HYS | PAD_CTL_SRE_SLOW | PAD_CTL_SPEED_LOW | \
+	 PAD_CTL_PKE | PAD_CTL_PUE | PAD_CTL_PUS_47K_UP | PAD_CTL_DSE_60ohm)
+
+#define BRIDGE_PAD_CTRL2	\
+	(PAD_CTL_HYS | PAD_CTL_SRE_SLOW | PAD_CTL_SPEED_LOW | \
+	 PAD_CTL_PKE | PAD_CTL_PUE | PAD_CTL_PUS_100K_DOWN | PAD_CTL_DSE_60ohm)
+	 	 
+static iomux_v3_cfg_t const bridge_pads[] = {
+	MX6_PAD_GPIO1_IO04__GPIO1_IO04 | MUX_PAD_CTRL(BRIDGE_PAD_CTRL1),
+	MX6_PAD_GPIO1_IO03__GPIO1_IO03 | MUX_PAD_CTRL(BRIDGE_PAD_CTRL1),
+	MX6_PAD_GPIO1_IO02__GPIO1_IO02 | MUX_PAD_CTRL(BRIDGE_PAD_CTRL1),
+	MX6_PAD_GPIO1_IO01__GPIO1_IO01 | MUX_PAD_CTRL(BRIDGE_PAD_CTRL1),
+	MX6_PAD_LCD_RESET__GPIO3_IO04 | MUX_PAD_CTRL(BRIDGE_PAD_CTRL1),
+};
+extern void  hbc068_init(void);
+extern void  hbc04_init(void);
+static void lcd_bridge_init(void) 
+{
+	/* Check if LCD attached */
+	imx_iomux_v3_setup_pad(MX6_PAD_LCD_RESET__GPIO3_IO04 | MUX_PAD_CTRL(BRIDGE_PAD_CTRL2));
+	gpio_request(IMX_GPIO_NR(3, 4), "lcd reset");
+	gpio_direction_input(IMX_GPIO_NR(3, 4));
+
+	udelay(500);
+	if (gpio_get_value(IMX_GPIO_NR(3, 4))) {
+		imx_iomux_v3_setup_pad(MX6_PAD_LCD_RESET__GPIO3_IO04 | MUX_PAD_CTRL(BRIDGE_PAD_CTRL1));
+
+		udelay(500);
+		if (gpio_get_value(IMX_GPIO_NR(3, 4))) {
+#ifdef CONFIG_VIDEO_LCD_HBC068 
+			gpio_free(IMX_GPIO_NR(3, 4));
+			imx_iomux_v3_setup_multiple_pads(bridge_pads, ARRAY_SIZE(bridge_pads));
+			hbc068_init();			
+#endif
+		}
+	}
+	else {
+#ifdef CONFIG_VIDEO_LCD_HBC04		
+			gpio_free(IMX_GPIO_NR(3, 4));
+			imx_iomux_v3_setup_multiple_pads(bridge_pads, ARRAY_SIZE(bridge_pads));
+			hbc04_init();	
+#endif
+	}
+}
+#endif
+
 int board_late_init(void)
 {
 #ifdef CONFIG_CMD_BMODE
@@ -505,6 +553,10 @@ int board_late_init(void)
 
 #ifdef CONFIG_ENV_IS_IN_MMC
 	board_late_mmc_env_init();
+#endif
+
+#if defined(CONFIG_VIDEO_LCD_HBC068) || defined(CONFIG_VIDEO_LCD_HBC04)
+	lcd_bridge_init();
 #endif
 
 	set_wdog_reset((struct wdog_regs *)WDOG1_BASE_ADDR);

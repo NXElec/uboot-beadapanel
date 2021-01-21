@@ -303,6 +303,21 @@ config VIDEO_LCD_HITACHI_TX18D42VM
 	lcd controller which needs to be initialized over SPI, once that is
 	done they work like a regular LVDS panel.
 
+config VIDEO_LCD_HBC068
+	bool "HBC068 6.86 Inches MIPI LCD panel support"
+	default n
+	---help---
+	Support for HBC068 6.86 Inches MIPI LCD panels, these panels have a
+	lcd controller which needs to be initialized over SPI, once that is
+	done they work like a regular RGB panel.
+
+config VIDEO_LCD_HBC04
+	bool "HBC04 4 Inches LCD panel support" 
+	default n
+	---help---
+	Support for HBC04 4 Inches LCD screens, these screens have a lcd 
+	controller which needs to be initialized over spi.
+	
 config VIDEO_LCD_SPI_CS
 	string "SPI CS pin for LCD related config job"
 	depends on VIDEO_LCD_SSD2828 || VIDEO_LCD_HITACHI_TX18D42VM
