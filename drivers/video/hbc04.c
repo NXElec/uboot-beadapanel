@@ -372,37 +372,164 @@ static int r61408_enable_gpio(const struct r61408_config *cfg)
 	return 0;
 }
 
-static void R61408_Init(struct r61408_config* cfg)
-{	
-	/* Initialize the pins */
-	if (r61408_enable_gpio(cfg) != 0)
-		return ;
+static void r61529_Reg_Fill(void)
+{
+	SPI_WriteComm(0xB4);
+	SPI_WriteData(0x00);
+	
+	SPI_WriteComm(0xB0);
+	SPI_WriteData(0x04);
 
-	gpio_set_value(cfg->csx_pin, 1);
-	gpio_set_value(cfg->reset_pin, 0);
+	SPI_WriteComm(0x20);
+	
+	SPI_WriteComm(0x36); //Set_address_mode
+ 	SPI_WriteData(0x6A); //ºáÆÁ
+	SPI_WriteComm(0x3A); 
+	SPI_WriteData(0x77);
+	
+	SPI_WriteComm(0xB3);
+	SPI_WriteData(0x02);
+	SPI_WriteData(0x00);
+	SPI_WriteData(0x00);
+	SPI_WriteData(0x20);
+	
+	
+	
+	SPI_WriteComm(0xc0);
+	SPI_WriteData(0x03);
+	SPI_WriteData(0xdf);
+	SPI_WriteData(0x40);
+	SPI_WriteData(0x12);
+	SPI_WriteData(0x00);
+	SPI_WriteData(0x01);
+	SPI_WriteData(0x00);
+	SPI_WriteData(0x55);// 
+	
+	SPI_WriteComm(0xc1);
+	SPI_WriteData(0x07);
+	SPI_WriteData(0x28);
+	SPI_WriteData(0x08);// 
+	SPI_WriteData(0x08);//
+	SPI_WriteData(0x00);//
+	
+	SPI_WriteComm(0xc4);
+	SPI_WriteData(0x70);//
+	SPI_WriteData(0x00);
+	SPI_WriteData(0x03);
+	SPI_WriteData(0x01);
+	
+	SPI_WriteComm(0xc6);
+	SPI_WriteData(0x1d);//1d
+	
+	SPI_WriteComm(0xc8);
+	SPI_WriteData(0x06);
+	SPI_WriteData(0x0c);
+	SPI_WriteData(0x16);
+	SPI_WriteData(0x24);
+	SPI_WriteData(0x30);
+	SPI_WriteData(0x48);
+	SPI_WriteData(0x3d);
+	SPI_WriteData(0x28);
+	SPI_WriteData(0x20);
+	SPI_WriteData(0x14);
+	SPI_WriteData(0x0c);
+	SPI_WriteData(0x04);
+	SPI_WriteData(0x06);
+	SPI_WriteData(0x0C);
+	SPI_WriteData(0x16);
+	SPI_WriteData(0x24);
+	SPI_WriteData(0x30);
+	SPI_WriteData(0x48);
+	SPI_WriteData(0x3D);
+	SPI_WriteData(0x28);
+	SPI_WriteData(0x20);
+	SPI_WriteData(0x14);
+	SPI_WriteData(0x0C);
+	SPI_WriteData(0x04);
+	
+	SPI_WriteComm(0xC9);
+	SPI_WriteData(0x06);
+	SPI_WriteData(0x0C);
+	SPI_WriteData(0x16);
+	SPI_WriteData(0x24);
+	SPI_WriteData(0x30);
+	SPI_WriteData(0x48);
+	SPI_WriteData(0x3D);
+	SPI_WriteData(0x28);
+	SPI_WriteData(0x20);
+	SPI_WriteData(0x14);
+	SPI_WriteData(0x0C);
+	SPI_WriteData(0x04);	
+	SPI_WriteData(0x06);
+	SPI_WriteData(0x0C);
+	SPI_WriteData(0x16);
+	SPI_WriteData(0x24);
+	SPI_WriteData(0x30);
+	SPI_WriteData(0x48);
+	SPI_WriteData(0x3D);
+	SPI_WriteData(0x28);
+	SPI_WriteData(0x20);
+	SPI_WriteData(0x14);
+	SPI_WriteData(0x0C);
+	SPI_WriteData(0x04);
+	
+	SPI_WriteComm(0xCA);
+	SPI_WriteData(0x06);
+	SPI_WriteData(0x0C);
+	SPI_WriteData(0x16);
+	SPI_WriteData(0x24);
+	SPI_WriteData(0x30);
+	SPI_WriteData(0x48);
+	SPI_WriteData(0x3D);
+	SPI_WriteData(0x28);
+	SPI_WriteData(0x20);
+	SPI_WriteData(0x14);
+	SPI_WriteData(0x0C);
+	SPI_WriteData(0x04);	
+	SPI_WriteData(0x06);
+	SPI_WriteData(0x0C);
+	SPI_WriteData(0x16);
+	SPI_WriteData(0x24);
+	SPI_WriteData(0x30);
+	SPI_WriteData(0x48);
+	SPI_WriteData(0x3D);
+	SPI_WriteData(0x28);
+	SPI_WriteData(0x20);
+	SPI_WriteData(0x14);
+	SPI_WriteData(0x0C);
+	SPI_WriteData(0x04);
+	
+	SPI_WriteComm(0xD0);
+	SPI_WriteData(0x95);
+	SPI_WriteData(0x0A);
+	SPI_WriteData(0x08);
+	SPI_WriteData(0x10);
+	SPI_WriteData(0x39);
+	
+	SPI_WriteComm(0xD1);
+	SPI_WriteData(0x02);
+	SPI_WriteData(0x2c);//
+	SPI_WriteData(0x2c);//
+	SPI_WriteData(0x44);//	
+	SPI_WriteData(0x00);//0x08 
+	
+	SPI_WriteComm(0x11);
 	mdelay(100);
-	gpio_set_value(cfg->reset_pin, 1);
+	SPI_WriteComm(0x29);
 	mdelay(100);
-
-#if 0
-	// Enter read mode
-	gpio_set_value(cfg->csx_pin, 1);
-	SPI_WriteComm(0xF5);
-	gpio_set_value(cfg->csx_pin, 1);
-
-	SPI_WriteComm(0xA1);
-	SPI_ReadData();
-	printf("R61408: DDB0=%x, DDB1=%x\n", SPI_ReadData(), SPI_ReadData());
-	printf("R61408: DDB2=%x, DDB3=%x\n", SPI_ReadData(), SPI_ReadData());
-	printf("R61408: IFID=%x\n", SPI_ReadData());
-	SPI_ReadData();
-
-	// Exit read mode
-	gpio_set_value(cfg->csx_pin, 1);
-	SPI_WriteComm(0xF6);
-	gpio_set_value(cfg->csx_pin, 1);
+	SPI_WriteComm(0x2C);
+		
+	SPI_WriteComm(0x36);
+#if LCD_RGB_ORIENTATION //ÊÇ·ñÐý×ª90¶È
+ SPI_WriteData(0x09);
+#else
+ SPI_WriteData(0x08);
 #endif
+	
+}
 
+static void r61408_Reg_Fill(void)
+{
 	////////////////////SSD2828 LP/////////////////////////
 		
 SPI_WriteComm(0x11); 
@@ -718,5 +845,41 @@ mdelay(10);
 
 SPI_WriteComm(0x36);
 SPI_WriteData(0x08);
+
+}
+
+static void R61408_Init(struct r61408_config* cfg)
+{	
+	unsigned char byte1,byte2;
+	
+	/* Initialize the pins */
+	if (r61408_enable_gpio(cfg) != 0)
+		return ;
+
+	gpio_set_value(cfg->csx_pin, 1);
+	gpio_set_value(cfg->reset_pin, 0);
+	mdelay(100);
+	gpio_set_value(cfg->reset_pin, 1);
+	mdelay(100);
+
+#if 1
+	// Enter read mode
+	gpio_set_value(cfg->csx_pin, 1);
+	SPI_WriteComm(0xF5);
+	gpio_set_value(cfg->csx_pin, 1);
+
+	SPI_WriteComm(0xA1);
+	SPI_ReadData();
+	printf("R61408: DDB0=%x, DDB1=%x\n", SPI_ReadData(), SPI_ReadData());
+	printf("R61408: DDB2=%x, DDB3=%x\n", SPI_ReadData(), SPI_ReadData());
+	printf("R61408: IFID=%x\n", SPI_ReadData());
+	SPI_ReadData();
+
+	// Exit read mode
+	gpio_set_value(cfg->csx_pin, 1);
+	SPI_WriteComm(0xF6);
+	gpio_set_value(cfg->csx_pin, 1);
+#else 
+#endif
 
 }
