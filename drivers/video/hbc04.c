@@ -171,7 +171,7 @@ struct r61408_config {
 #define TSYM_SDO_GPIO_LOW		GPIO1_IO01_LOW
 #define MISC1_RESET_GPIO_LOW		GPIO3_IO04_LOW
 
-#define SPI_DELAY_VARIANT 10
+#define SPI_DELAY_VARIANT 1
 #define REG_ADDR(x) 		 (volatile unsigned int *)(x)
 #define REG_GET(x) 		*(REG_ADDR(x))
 
@@ -206,7 +206,7 @@ static struct r61408_config cfg = {
 static void R61408_Init(struct r61408_config* cfg);
 void hbc04_init(void)
 {	
-	printf("csx:%x, sck:%x, sdi:%x, sdo:%x, reset:%x\n", cfg.csx_pin, cfg.sck_pin, cfg.sdi_pin, cfg.sdo_pin, cfg.reset_pin);
+//	printf("csx:%x, sck:%x, sdi:%x, sdo:%x, reset:%x\n", cfg.csx_pin, cfg.sck_pin, cfg.sdi_pin, cfg.sdo_pin, cfg.reset_pin);
 		
 	if (cfg.csx_pin == -1 || cfg.sck_pin == -1 || cfg.sdi_pin == -1) {
 		printf("R61408: SPI pins are not properly configured\n");
@@ -220,8 +220,6 @@ void hbc04_init(void)
 	R61408_Init(&cfg);
 }
 
-
-#if 1
 static void SPI_WriteComm(unsigned char index)	
 {
  unsigned char j;
@@ -262,7 +260,7 @@ static void SPI_WriteComm(unsigned char index)
 			udelay(SPI_DELAY_VARIANT);	
 		}
 
-	gpio_set_value(cfg.sdi_pin, 1);	
+//	gpio_set_value(cfg.csx_pin, 1);	
 }
 
 static void SPI_WriteData(unsigned char cmddata)	
@@ -301,13 +299,15 @@ static void SPI_WriteData(unsigned char cmddata)
 			udelay(SPI_DELAY_VARIANT);	
 		}
 
-	gpio_set_value(cfg.sdi_pin, 1);	
+//	gpio_set_value(cfg.csx_pin, 1);	
 }
 
 static unsigned char SPI_ReadData(void)	
 {
 	unsigned char cmddata = 0;
 	unsigned char j;
+
+	gpio_set_value(cfg.csx_pin, 0);
  
   //************************//    
 			    
@@ -321,12 +321,9 @@ static unsigned char SPI_ReadData(void)
 		udelay(SPI_DELAY_VARIANT);	
 	}
 
+//	gpio_set_value(cfg.csx_pin, 1);
 	return cmddata;	
 }
-
-#else
-
-#endif
 
 static int r61408_enable_gpio(const struct r61408_config *cfg)
 {
@@ -362,7 +359,7 @@ static int r61408_enable_gpio(const struct r61408_config *cfg)
 		return 1;
 	}
 #endif
-	gpio_direction_output(cfg->reset_pin, 0);
+	gpio_direction_output(cfg->reset_pin, 1);
 	gpio_direction_output(cfg->csx_pin, 1);
 	gpio_direction_output(cfg->sck_pin, 1);
 	gpio_direction_output(cfg->sdi_pin, 1);
@@ -374,25 +371,32 @@ static int r61408_enable_gpio(const struct r61408_config *cfg)
 
 static void r61529_Reg_Fill(void)
 {
+
 	SPI_WriteComm(0xB4);
 	SPI_WriteData(0x00);
-	
+	gpio_set_value(cfg.csx_pin, 1);
+		
 	SPI_WriteComm(0xB0);
 	SPI_WriteData(0x04);
+	gpio_set_value(cfg.csx_pin, 1);	
 
 	SPI_WriteComm(0x20);
-	
+	gpio_set_value(cfg.csx_pin, 1);
+		
 	SPI_WriteComm(0x36); //Set_address_mode
- 	SPI_WriteData(0x6A); //ºáÆÁ
+ 	SPI_WriteData(0x6A); //
+	gpio_set_value(cfg.csx_pin, 1);
+		
 	SPI_WriteComm(0x3A); 
 	SPI_WriteData(0x77);
-	
+	gpio_set_value(cfg.csx_pin, 1);
+		
 	SPI_WriteComm(0xB3);
 	SPI_WriteData(0x02);
 	SPI_WriteData(0x00);
 	SPI_WriteData(0x00);
 	SPI_WriteData(0x20);
-	
+	gpio_set_value(cfg.csx_pin, 1);	
 	
 	
 	SPI_WriteComm(0xc0);
@@ -404,23 +408,27 @@ static void r61529_Reg_Fill(void)
 	SPI_WriteData(0x01);
 	SPI_WriteData(0x00);
 	SPI_WriteData(0x55);// 
-	
+	gpio_set_value(cfg.csx_pin, 1);
+		
 	SPI_WriteComm(0xc1);
 	SPI_WriteData(0x07);
 	SPI_WriteData(0x28);
 	SPI_WriteData(0x08);// 
 	SPI_WriteData(0x08);//
 	SPI_WriteData(0x00);//
-	
+	gpio_set_value(cfg.csx_pin, 1);
+		
 	SPI_WriteComm(0xc4);
 	SPI_WriteData(0x70);//
 	SPI_WriteData(0x00);
 	SPI_WriteData(0x03);
 	SPI_WriteData(0x01);
-	
+	gpio_set_value(cfg.csx_pin, 1);
+		
 	SPI_WriteComm(0xc6);
 	SPI_WriteData(0x1d);//1d
-	
+	gpio_set_value(cfg.csx_pin, 1);
+		
 	SPI_WriteComm(0xc8);
 	SPI_WriteData(0x06);
 	SPI_WriteData(0x0c);
@@ -446,7 +454,8 @@ static void r61529_Reg_Fill(void)
 	SPI_WriteData(0x14);
 	SPI_WriteData(0x0C);
 	SPI_WriteData(0x04);
-	
+	gpio_set_value(cfg.csx_pin, 1);
+		
 	SPI_WriteComm(0xC9);
 	SPI_WriteData(0x06);
 	SPI_WriteData(0x0C);
@@ -472,7 +481,8 @@ static void r61529_Reg_Fill(void)
 	SPI_WriteData(0x14);
 	SPI_WriteData(0x0C);
 	SPI_WriteData(0x04);
-	
+	gpio_set_value(cfg.csx_pin, 1);
+		
 	SPI_WriteComm(0xCA);
 	SPI_WriteData(0x06);
 	SPI_WriteData(0x0C);
@@ -498,34 +508,39 @@ static void r61529_Reg_Fill(void)
 	SPI_WriteData(0x14);
 	SPI_WriteData(0x0C);
 	SPI_WriteData(0x04);
-	
+	gpio_set_value(cfg.csx_pin, 1);
+		
 	SPI_WriteComm(0xD0);
 	SPI_WriteData(0x95);
 	SPI_WriteData(0x0A);
 	SPI_WriteData(0x08);
 	SPI_WriteData(0x10);
 	SPI_WriteData(0x39);
-	
+	gpio_set_value(cfg.csx_pin, 1);
+		
 	SPI_WriteComm(0xD1);
 	SPI_WriteData(0x02);
 	SPI_WriteData(0x2c);//
 	SPI_WriteData(0x2c);//
 	SPI_WriteData(0x44);//	
 	SPI_WriteData(0x00);//0x08 
-	
-	SPI_WriteComm(0x11);
-	mdelay(100);
-	SPI_WriteComm(0x29);
-	mdelay(100);
-	SPI_WriteComm(0x2C);
+	gpio_set_value(cfg.csx_pin, 1);
 		
+	SPI_WriteComm(0x11);
+	gpio_set_value(cfg.csx_pin, 1);
+
+	mdelay(7);
+	SPI_WriteComm(0x29);
+	gpio_set_value(cfg.csx_pin, 1);
+
+	mdelay(7);
+	SPI_WriteComm(0x2C);
+	gpio_set_value(cfg.csx_pin, 1);
+			
 	SPI_WriteComm(0x36);
-#if LCD_RGB_ORIENTATION //ÊÇ·ñÐý×ª90¶È
- SPI_WriteData(0x09);
-#else
- SPI_WriteData(0x08);
-#endif
-	
+	SPI_WriteData(0x00);
+	gpio_set_value(cfg.csx_pin, 1);
+			
 }
 
 static void r61408_Reg_Fill(void)
@@ -857,29 +872,40 @@ static void R61408_Init(struct r61408_config* cfg)
 		return ;
 
 	gpio_set_value(cfg->csx_pin, 1);
+	mdelay(2);
+	gpio_set_value(cfg->csx_pin, 0);
 	gpio_set_value(cfg->reset_pin, 0);
-	mdelay(100);
+	mdelay(10);
 	gpio_set_value(cfg->reset_pin, 1);
-	mdelay(100);
+	mdelay(10);
 
-#if 1
+	gpio_set_value(cfg->csx_pin, 1);
+
 	// Enter read mode
+	SPI_WriteComm(0xB0);
+	SPI_WriteData(0x04);
 	gpio_set_value(cfg->csx_pin, 1);
-	SPI_WriteComm(0xF5);
-	gpio_set_value(cfg->csx_pin, 1);
-
-	SPI_WriteComm(0xA1);
-	SPI_ReadData();
-	printf("R61408: DDB0=%x, DDB1=%x\n", SPI_ReadData(), SPI_ReadData());
-	printf("R61408: DDB2=%x, DDB3=%x\n", SPI_ReadData(), SPI_ReadData());
-	printf("R61408: IFID=%x\n", SPI_ReadData());
+	
+	SPI_WriteComm(0xBF);
 	SPI_ReadData();
 
-	// Exit read mode
+	SPI_ReadData();
+	SPI_ReadData();
+	byte1 = SPI_ReadData();
+	byte2 = SPI_ReadData();
 	gpio_set_value(cfg->csx_pin, 1);
-	SPI_WriteComm(0xF6);
+	
+	// Enter read mode
+	SPI_WriteComm(0xB0);
+	SPI_WriteData(0x04);
 	gpio_set_value(cfg->csx_pin, 1);
-#else 
-#endif
+		
+  if (byte1==0x15 && byte2==0x29) {
+  	printf("R61259 found!\n");
+		r61529_Reg_Fill();
+
+  }
+
+	gpio_set_value(cfg->csx_pin, 1);  			  	
 
 }
