@@ -543,6 +543,209 @@ static void r61529_Reg_Fill(void)
 			
 }
 
+static void LG4572B_Reg_Fill(void)
+{
+	SPI_WriteComm(0xc0);  
+	SPI_WriteData(0x01);
+	SPI_WriteData(0x11);
+	gpio_set_value(cfg.csx_pin, 1);
+	 
+	SPI_WriteComm(0x20);  
+	gpio_set_value(cfg.csx_pin, 1);
+
+	SPI_WriteComm(0x36);  
+	SPI_WriteData(0x0A);
+	gpio_set_value(cfg.csx_pin, 1);
+
+	SPI_WriteComm(0x3a);  
+	SPI_WriteData(0x77);//16/18/24bit
+	gpio_set_value(cfg.csx_pin, 1);
+ 
+	SPI_WriteComm(0x35);  
+	SPI_WriteData(0x00);
+	gpio_set_value(cfg.csx_pin, 1);
+  
+ SPI_WriteComm(0xb1);  
+ SPI_WriteData(0x06);
+ SPI_WriteData(0x03);
+ SPI_WriteData(0x00);
+	gpio_set_value(cfg.csx_pin, 1);
+
+ SPI_WriteComm(0xb2);            
+ SPI_WriteData(0x00);
+ SPI_WriteData(0xc8);
+	gpio_set_value(cfg.csx_pin, 1);
+
+ SPI_WriteComm(0xb3);            
+ SPI_WriteData(0x01);
+	gpio_set_value(cfg.csx_pin, 1);
+ 
+ SPI_WriteComm(0xb4);            
+ SPI_WriteData(0x04);
+	gpio_set_value(cfg.csx_pin, 1);
+ 
+ SPI_WriteComm(0xb5);            
+ SPI_WriteData(0x10);
+ SPI_WriteData(0x30);
+ SPI_WriteData(0x30);
+ SPI_WriteData(0x00);
+ SPI_WriteData(0x00);
+	gpio_set_value(cfg.csx_pin, 1);
+ 
+ SPI_WriteComm(0xb6);  //
+ SPI_WriteData(0x0b);  //0b
+ SPI_WriteData(0x0f);
+ SPI_WriteData(0x3c);
+ SPI_WriteData(0x13);
+ SPI_WriteData(0x13);
+ SPI_WriteData(0xe8);
+	gpio_set_value(cfg.csx_pin, 1);
+ 
+ SPI_WriteComm(0xb7);  
+ SPI_WriteData(0x46);
+ SPI_WriteData(0x06);
+ SPI_WriteData(0x0c);
+ SPI_WriteData(0x00);
+ SPI_WriteData(0x00);
+	gpio_set_value(cfg.csx_pin, 1);
+ 
+SPI_WriteComm(0xc0); //Internal Oscillator Setting 
+ SPI_WriteData(0x01);
+ SPI_WriteData(0x15);
+	gpio_set_value(cfg.csx_pin, 1);
+ 
+ SPI_WriteComm(0xc3); //Power Control 3 
+ SPI_WriteData(0x07);
+ SPI_WriteData(0x03);
+ SPI_WriteData(0x04);
+ SPI_WriteData(0x04);
+ SPI_WriteData(0x04);
+	gpio_set_value(cfg.csx_pin, 1);
+
+	mdelay(3);
+
+ SPI_WriteComm(0xc4); //Power Control 4 
+ SPI_WriteData(0x12);//11
+ SPI_WriteData(0x24);//23
+ SPI_WriteData(0x12);//12   16 
+ SPI_WriteData(0x12);//12   16
+ SPI_WriteData(0x02);//05   
+ SPI_WriteData(0x6b);//6d  49   //6A
+	gpio_set_value(cfg.csx_pin, 1);
+
+	mdelay(2);
+
+	SPI_WriteComm(0xc5); //Power Control 5 
+	SPI_WriteData(0x69);  //69
+	gpio_set_value(cfg.csx_pin, 1);
+
+	mdelay(1);
+
+	SPI_WriteComm(0xc6); //Power Control 6  
+	SPI_WriteData(0x41);//41 40
+	SPI_WriteData(0x63);
+	gpio_set_value(cfg.csx_pin, 1);
+
+	mdelay(1);
+
+
+
+ SPI_WriteComm(0xd0); //Positive Gamma Curve for Red 
+ SPI_WriteData(0x01);
+ SPI_WriteData(0x26);
+ SPI_WriteData(0x71);
+ SPI_WriteData(0x16);
+ SPI_WriteData(0x04);
+ SPI_WriteData(0x03);
+ SPI_WriteData(0x51);
+ SPI_WriteData(0x15);
+ SPI_WriteData(0x04);
+	gpio_set_value(cfg.csx_pin, 1);
+
+
+ SPI_WriteComm(0xd1); //Negative Gamma Curve for Red 
+ SPI_WriteData(0x01);
+ SPI_WriteData(0x26);
+ SPI_WriteData(0x71);
+ SPI_WriteData(0x16);
+ SPI_WriteData(0x04);
+ SPI_WriteData(0x03);
+ SPI_WriteData(0x51);
+ SPI_WriteData(0x15);
+ SPI_WriteData(0x04);
+	gpio_set_value(cfg.csx_pin, 1);
+
+
+ SPI_WriteComm(0xd2); //Positive Gamma Curve for Green 
+ SPI_WriteData(0x01);
+ SPI_WriteData(0x26);
+ SPI_WriteData(0x71);
+ SPI_WriteData(0x16);
+ SPI_WriteData(0x04);
+ SPI_WriteData(0x03);
+ SPI_WriteData(0x51);
+ SPI_WriteData(0x15);
+ SPI_WriteData(0x04);
+	gpio_set_value(cfg.csx_pin, 1);
+
+ 
+ SPI_WriteComm(0xd3); //Negative Gamma Curve for Green 
+ SPI_WriteData(0x01);
+ SPI_WriteData(0x26);
+ SPI_WriteData(0x71);
+ SPI_WriteData(0x16);
+ SPI_WriteData(0x04);
+ SPI_WriteData(0x03);
+ SPI_WriteData(0x51);
+ SPI_WriteData(0x15);
+ SPI_WriteData(0x04);
+	gpio_set_value(cfg.csx_pin, 1);
+
+ 
+ SPI_WriteComm(0xd4);//Positive Gamma Curve for Blue  
+ SPI_WriteData(0x01);
+ SPI_WriteData(0x26);
+ SPI_WriteData(0x71);
+ SPI_WriteData(0x16);
+ SPI_WriteData(0x04);
+ SPI_WriteData(0x03);
+ SPI_WriteData(0x51);
+ SPI_WriteData(0x15);
+ SPI_WriteData(0x04);
+	gpio_set_value(cfg.csx_pin, 1);
+
+
+ SPI_WriteComm(0xd5);//Negative Gamma Curve for Blue  
+ SPI_WriteData(0x01);
+ SPI_WriteData(0x26);
+ SPI_WriteData(0x71);
+ SPI_WriteData(0x16);
+ SPI_WriteData(0x04);
+ SPI_WriteData(0x03);
+ SPI_WriteData(0x51);
+ SPI_WriteData(0x15);
+ SPI_WriteData(0x04);
+	gpio_set_value(cfg.csx_pin, 1); 
+
+	SPI_WriteComm(0x11); //Sleep Out 
+	gpio_set_value(cfg.csx_pin, 1);
+
+	mdelay(2);
+
+	SPI_WriteComm(0x29);//Display On	
+	gpio_set_value(cfg.csx_pin, 1);
+
+	mdelay(1);
+	
+#if LCD_RGB_ORIENTATION //是否旋转90度
+ SPI_WriteComm(0x36);SPI_WriteData(0x22);//旋转屏幕//横屏：60与A0互为旋转180度
+#else
+ SPI_WriteComm(0x36);SPI_WriteData(0x20);//旋转屏幕//竖屏: 00与C0互为旋转180度
+#endif
+	gpio_set_value(cfg.csx_pin, 1);
+
+}
+
 static void r61408_Reg_Fill(void)
 {
 	////////////////////SSD2828 LP/////////////////////////
@@ -904,6 +1107,11 @@ static void R61408_Init(struct r61408_config* cfg)
   	printf("R61259 found!\n");
 		r61529_Reg_Fill();
 
+  }
+  else {
+  	printf("LG4572B Init! %x %x\n", byte1, byte2);
+		LG4572B_Reg_Fill();
+  	
   }
 
 	gpio_set_value(cfg->csx_pin, 1);  			  	
